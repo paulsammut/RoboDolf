@@ -8,4 +8,4 @@ In this repo, the entire software system powering the RoboDolf is supplied. The 
 
 ## RDS Architecture
 
-![root actor](images/root_actor.png "Root actor child actor launch page")
+![root actor](images/root_actor.jpg "Root actor child actor launch page")
