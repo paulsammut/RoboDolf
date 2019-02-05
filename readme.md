@@ -32,8 +32,8 @@ data between each other in a structured way.
 
 RDS is comprised of the following actors:
 - [AIP Actor](#aip-actor)
-- [Port Motor Actor](#mcb-motor-actor-(port-and-stbd))
-- [STBD Motor Actor](#mcb-motor-actor-(port-and-stbd))
+- [Port Motor Actor](#mcb-motor-actor-(port-and-stbd\))
+- [STBD Motor Actor](#mcb-motor-actor-(port-and-stbd\))
 - [Battery Manager Actor](#battery-manager-actor)
 - [Dept Sensor Actor](#dept-sensor-actor)
 - [LSR Actor](#lsr-actor)
