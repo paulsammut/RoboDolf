@@ -13,8 +13,8 @@ In this repo, the entire software system powering the RoboDolf is supplied. The 
 The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major function of the RoboDolf is written as a nested child actor object that inherets from a special RDS Parent Actor object. This allowed me to be able to create node-like processes that ran independantly of each other, but could easily share data between each other in a structured way. 
 
 RDS is comprised of the following actors:
-- AIP Actor
-- Port Motor Actor
+- [AIP Actor](#aip-actor)
+- [Port Motor Actor](#port-motor-actor)
 - STBD Motor Actor
 - Battery Manager Actor
 - Dept Sensor Actor
