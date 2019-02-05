@@ -25,9 +25,9 @@ that facilitated a one-to-many node communication system.
 ![root actor](images/root_actor.png "Root actor child actor launch page")
 
 The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major
-function of the RoboDolf is written as a nested child actor object that inherets
+function of the RoboDolf is written as a nested child actor object that inherits
 from a special RDS Parent Actor object. This allowed me to be able to create
-node-like processes that ran independantly of each other, but could easily share
+node-like processes that ran independently of each other, but could easily share
 data between each other in a structured way. 
 
 RDS is comprised of the following actors:
@@ -59,4 +59,14 @@ the following:
 
 ### MCB Motor Actor (Port and STBD)
 
-The Port Motor Actor is an MCB Instrument class actor 
+![MCB class hierarchy](images/MCB_class.png)
+
+The Port Motor Actor is an instance of an MCB Instrument Class which inherits
+from an RDS Instrument class. The RDS Instrument class is a descendant of the
+RDS Parent Actor class, and adds serial communications functionality. This actor
+can be set up to be a Port or STBD motor controller, which follows the DRY
+principle for identical motor controller code. This actor is responsible for the 
+following:
+
+- create and maintain a serial connection to the specified motor controller (port/stbd)
+- subscribe to motor messages and enact motor commands to appropriate serial commands
