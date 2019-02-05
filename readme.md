@@ -31,6 +31,7 @@ node-like processes that ran independently of each other, but could easily share
 data between each other in a structured way. 
 
 RDS comprises the following actors:
+
 - [AIP Actor](#aip-actor)
 - [Port Motor Actor](#mcb-motor-actor-port-and-stbd)
 - [STBD Motor Actor](#mcb-motor-actor-port-and-stbd)
@@ -65,11 +66,25 @@ The Port Motor Actor is an instance of an MCB Instrument Class which inherits
 from an RDS Instrument class. The RDS Instrument class is a descendant of the
 RDS Parent Actor class, and adds serial communications functionality. This actor
 can be set up to be a Port or STBD motor controller, which follows the DRY
-principle for identical motor controller code. This actor is responsible for the 
-following:
+principle for identical motor controller code. 
+
+![MCB port](images/MCB_port.png)
+
+This actor is responsible for the following:
 
 - create and maintain a serial connection to the specified motor controller (port/stbd)
 - subscribe to motor messages and enact motor commands to appropriate serial commands
 - read back state information about thruster, pack a motor state message and send it out
 
 ### Battery Manager Actor
+
+![Battery pack](images/BTB_pack.png)
+
+The Battery Management Actor inherits from the RDS Instrument Class to gain
+access to serial port functionality. It communicates with the Battery Box
+computer and handles reading the state of the battery along with having the
+ability to issue a battery kill command that disconnects the main power relay.
+The battery bank is a set of 2 LiFePo4 12.8V 100Ah packs in parallel for a total
+of 200Ah at 12V nominal.
+
+![Battery manager](images/BTB.png)
