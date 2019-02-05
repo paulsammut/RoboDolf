@@ -18,7 +18,8 @@ of Belize and successfully operated in mangroves.
 In this repo, the entire software system powering the RoboDolf is supplied. The
 system was written by Paul Sammut in LabVIEW using the actor framework. A custom
 message routing and subscription layer was written on top of the actor framework
-that facilitated a one-to-many node communication system.
+that facilitated a one-to-many node communication system. Note: I wrote this
+project before learning ROS and if were doing it agian I would write it in ROS.
 
 ## RDS Architecture
 
@@ -38,7 +39,6 @@ RDS comprises the following actors:
 - [Battery Manager Actor](#battery-manager-actor)
 - [Dept Sensor Actor](#dept-sensor-actor)
 - [LSR Actor](#lsr-actor)
-- [HSR Actor](#hsr-actor)
 - [Logger Actor](#logger-actor)
 - [Local Remote Actor](#local-remote-actor)
 - [GPS Actor](#gps-actor)
@@ -88,3 +88,57 @@ The battery bank is a set of 2 LiFePo4 12.8V 100Ah packs in parallel for a total
 of 200Ah at 12V nominal.
 
 ![Battery manager](images/BTB.png)
+
+### Depth Sensor Actor
+
+The Depth Sensor Actor inherits from the RDS Instrument Class to gain access to
+serial port functionality. It communicates through RS485 to a thru-hull depth
+transducer and publishes water depth messages.
+
+### LSR Actor
+
+The Low Speed Radio (LSR) Actor handles duplex wirelss communication to a remote
+system via a wireless 900 MHz link. It does this by subcribing to a list of RDS
+messages. On receipt of any of these messages, it serializes them into a string,
+then compresses the string using GZIP, splits the string into a set of packets
+to satisfy the maximum COBS packet length less 2 bytes for a CRC32 number,
+computes the CRC32 value and adds it to the end, then encodes it in COBS to
+create a packet with a unique termination character. With this set of uniquely
+terimnated byte array packets, it sends them out to the LSR to be transmitted
+wirelessly. 
+
+
+The receiver receives and decodes these packets in the reverse manner. It then
+converts the serialized RDS string into a valid RDS message object and simply
+sends it to the RDS message router as if it were the original sender. The
+receiver also has the same exact sending functionality, and can send packets to
+the LSR actor on board the ship. The LSR Actor reiceves these packes and decodes
+them in the same way. 
+
+![LSR Parabolic base station antenna](images/LSR.png)
+
+With this communications system, actors can communicate to each other
+asynchronously while not running on the same computer, miles away from each
+other thanks to the 900MHz link. The base station utilized a parabolic antenna,
+while the RoboDolf had an omnidirectional antenna onboard.
+
+### Logger Actor
+
+The Logger Actor creates log files for post mission review. It does this by
+simply recording RSD Message traffic. A Logger replay utility was also written
+to playback the RDS messages. A list of RDS messages is used for logging
+subscription.
+
+### Local Remote Actor
+
+### GPS Actor
+
+### Compass Actor
+
+### State Tracker Actor
+
+### Helm Actor
+
+### Controller Actor
+
+### Mission Control Actor
