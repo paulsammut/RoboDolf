@@ -32,8 +32,8 @@ data between each other in a structured way.
 
 RDS is comprised of the following actors:
 - [AIP Actor](#aip-actor)
-- [Port Motor Actor](#mcb-motor-actor-(port-and-stbd\))
-- [STBD Motor Actor](#mcb-motor-actor-(port-and-stbd\))
+- [Port Motor Actor](#mcb-motor-actor-(port-and-stbd))
+- [STBD Motor Actor](#mcb-motor-actor-(port-and-stbd))
 - [Battery Manager Actor](#battery-manager-actor)
 - [Dept Sensor Actor](#dept-sensor-actor)
 - [LSR Actor](#lsr-actor)
@@ -70,3 +70,6 @@ following:
 
 - create and maintain a serial connection to the specified motor controller (port/stbd)
 - subscribe to motor messages and enact motor commands to appropriate serial commands
+- read back state information about thruster, pack a motor state message and send it out
+
+### Battery Manager Actor
