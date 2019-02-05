@@ -32,8 +32,8 @@ data between each other in a structured way.
 
 RDS comprises the following actors:
 - [AIP Actor](#aip-actor)
-- [Port Motor Actor][1]
-- [STBD Motor Actor][1]
+- [Port Motor Actor](#mcb-motor-actor-port-and-stbd)
+- [STBD Motor Actor](#mcb-motor-actor-port-and-stbd)
 - [Battery Manager Actor](#battery-manager-actor)
 - [Dept Sensor Actor](#dept-sensor-actor)
 - [LSR Actor](#lsr-actor)
@@ -46,8 +46,6 @@ RDS comprises the following actors:
 - [Helm Actor](#helm-actor)
 - [Controller Actor](#controller-actor)
 - [Mission Control Actor](#mission-control-actor)
-
-[1]: #mcb motor actor (port and stbd)
 
 ### AIP Actor
 
