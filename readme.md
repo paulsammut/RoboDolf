@@ -181,13 +181,33 @@ The Helm Actor is the process that issues throttle commands to the motors. It
 does this in two ways, by reading heading commands (imagine the Captain saying
 "Point the ship to 35 degrees" or by reading steering commands containing rudder
 and throttle data (imagine the Captain saying "Right full rudder and all ahead
-full"). This actor operates by a state machine. 
+full"). The RoboDolf steers by use differential thrust. This has the mechanical
+benefit of avoiding rudder actuators that add cost and reliability issues and
+also allows for in-place turning. This actor operates by a state machine which
+has three of the following states: 
 
-The RoboDolf steers by use differential thrust. This has the mechanical benefit
-of avoiding rudder actuators that add cost and reliability issues and also
-allows for in-place turning.
+* idle 
+* executing steering command
+* executing heading command
+
+The state changes are triggered by incoming steering or heading messages. If the
+Helm Actor receives a steering messages, it switches its state to "executing
+steering command" and executes a set of code to process and enact the steering
+command. Same goes for the heading command. This allow for clean and separated
+code for each operating mode. The state machine also allows the Helm Actor to
+operate under its own control loop asynchronously with respect to incoming
+commands. The Helm Actor also implements a timeout mechanism for all steering
+and heading commands and issues an All Stop command if no new steering/heading
+commands are received.
 
 ![Differential thrust calculation](images/diff_thrust.png)
+
+When following steering commands the Helm Actor converts the rudder and throttle
+commands into motor thrust commands using a differential thrust algorithm.
+
+When following heading commands the Helm Actor uses a PID loop with the desired
+heading as a setpoint and the actual heading as the input. The gains were
+tweaked during field tests and can be set remotely and while under operation. 
 
 ### Controller Actor
 
