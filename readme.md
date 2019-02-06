@@ -51,8 +51,9 @@ RDS comprises the following actors:
 ### AIP Actor
 
 The Actuated Instrument Pod system is a set of 4 poles that can be deployed into
-the water automatically by a linear actuator. The AIP actor is responsible for
-the following:
+the water automatically by a linear actuator. It can monitor deployed,
+deploying, stowed, and stowing states of each pod independently and can also
+actuate each pod independently. The AIP actor is responsible for the following:
 
 - create and maintains a serial connection to the AIP system 
 - subscribe and monitor to AIP-command messages
@@ -141,6 +142,11 @@ press a button on the controller that requests control from the vehicle.  This
 request is managed by the Controller Actor, which handles arbitration of who is
 currently in control of the vehicle. 
 
+The Local Remote Actor works by converting joystick commands into rudder and
+throttle commands. These commands are called RDS Steering Commands and are read
+by the Helm Actor. The Helm actor then converts the rudder and throttle commands
+into throttle commands for the Port and STBD thrusters.
+
 ### GPS Actor
 
 ![Garmin GPS](images/GPS.png)
@@ -158,10 +164,28 @@ produce an AHRS output.
 
 ### State Tracker Actor
 
-
+The State Tracker Actor monitors all the RoboDolf's various vital signs from the
+different subsystems and compiles them into one RDS State object. This object
+contains every sensor channel and subsystem state and is sampled at a set
+sampling rate. For a list of all things sampled into an [RDS State object see
+here](images/RDS_state.png). The State Tracker Actor sends this compiled RDS
+State object at a set rate. This object is sent over the LSR and provides the
+main telemetry feedback during shore monitoring and remote operation.
 
 ### Helm Actor
+
+The Helm Actor is the process that issues throttle commands to the motors. It
+does this in two ways, by reading heading commands (imagine the Captain saying
+"Point the ship to 35 degrees" or by reading steering commands containing rudder
+and throttle data (imagine the Captain saying "Right full rudder and all ahead
+full"). This actor operates by a state machine. 
 
 ### Controller Actor
 
 ### Mission Control Actor
+
+## Utilities
+
+### Monitor
+
+### Log Reader
