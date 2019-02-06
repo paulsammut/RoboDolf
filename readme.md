@@ -1,8 +1,8 @@
 # RoboDolf Software
 
-![alt text](images/title.jpg "RoboDolf vehicle in trials in Belize")
+![RoboDolf](images/robodolf.png "RoboDolf vehicle in trials in Belize")
 
-The RoboDolf was a robot boat designed to assign in acoustic dolphin research in
+The RoboDolf is a robot boat designed to assign in acoustic dolphin research in
 Belize. It was an unmanned surface vessel (USV) that was built on a 16' long
 SeaCycle catamaran platform. It was powered by a LiFePo4 battery bank powering
 two modified electric thrusters in a differential thrust configuration. It has
@@ -19,7 +19,7 @@ In this repo, the entire software system powering the RoboDolf is supplied. The
 system was written by Paul Sammut in LabVIEW using the actor framework. A custom
 message routing and subscription layer was written on top of the actor framework
 that facilitated a one-to-many node communication system. Note: I wrote this
-project before learning ROS and if were doing it agian I would write it in ROS.
+project before learning ROS and if were doing it again I would write it in ROS.
 
 ## RDS Architecture
 
@@ -72,7 +72,7 @@ principle for identical motor controller code.
 
 This actor is responsible for the following:
 
-- create and maintain a serial connection to the specified motor controller (port/stbd)
+- create and maintain a serial connection to the specified motor controller (port/STBD)
 - subscribe to motor messages and enact motor commands to appropriate serial commands
 - read back state information about thruster, pack a motor state message and send it out
 
@@ -97,14 +97,14 @@ transducer and publishes water depth messages.
 
 ### LSR Actor
 
-The Low Speed Radio (LSR) Actor handles duplex wirelss communication to a remote
-system via a wireless 900 MHz link. It does this by subcribing to a list of RDS
+The Low Speed Radio (LSR) Actor handles duplex wireless communication to a remote
+system via a wireless 900 MHz link. It does this by subscribing to a list of RDS
 messages. On receipt of any of these messages, it serializes them into a string,
 then compresses the string using GZIP, splits the string into a set of packets
 to satisfy the maximum COBS packet length less 2 bytes for a CRC32 number,
 computes the CRC32 value and adds it to the end, then encodes it in COBS to
 create a packet with a unique termination character. With this set of uniquely
-terimnated byte array packets, it sends them out to the LSR to be transmitted
+terminated byte array packets, it sends them out to the LSR to be transmitted
 wirelessly. 
 
 
@@ -112,7 +112,7 @@ The receiver receives and decodes these packets in the reverse manner. It then
 converts the serialized RDS string into a valid RDS message object and simply
 sends it to the RDS message router as if it were the original sender. The
 receiver also has the same exact sending functionality, and can send packets to
-the LSR actor on board the ship. The LSR Actor reiceves these packes and decodes
+the LSR actor on board the ship. The LSR Actor receives these packs and decodes
 them in the same way. 
 
 ![LSR Parabolic base station antenna](images/LSR.png)
@@ -125,17 +125,40 @@ while the RoboDolf had an omnidirectional antenna onboard.
 ### Logger Actor
 
 The Logger Actor creates log files for post mission review. It does this by
-simply recording RSD Message traffic. A Logger replay utility was also written
+simply recording RDS Message traffic. A Logger replay utility was also written
 to playback the RDS messages. A list of RDS messages is used for logging
 subscription.
 
 ### Local Remote Actor
 
+![local remote control](images/localremote.png)
+
+The Local Remote Actor handles the functionality that allows an onboard vehicle
+operator to steer the boat via the onboard xbox controller. Because there are
+multiple controllers (there is the shore remote, local remote and mission
+controller) that can each steer the helm, the operator had to  first has to
+press a button on the controller that requests control from the vehicle.  This
+request is managed by the Controller Actor, which handles arbitration of who is
+currently in control of the vehicle. 
+
 ### GPS Actor
+
+![Garmin GPS](images/GPS.png)
+
+The GPS Actor handles the communication with the Garmin marine GPS. It is an RDS
+Instrument Actor object and receives, decodes NMEA strings and packs them into
+an RDS GPS message. This data is used by the Helm Actor for navigation and
+waypoint reference.
 
 ### Compass Actor
 
+The Compass Actor interfaces with an OceanServer OS5000 digital compass which
+fuses data from Honeywell magnetometer and ST Microelectronics accelerometers to
+produce an AHRS output. 
+
 ### State Tracker Actor
+
+
 
 ### Helm Actor
 
