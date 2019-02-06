@@ -50,10 +50,11 @@ RDS comprises the following actors:
 
 ### AIP Actor
 
-The Actuated Instrument Pod system is a set of 4 poles that can be deployed into
-the water automatically by a linear actuator. It can monitor deployed,
-deploying, stowed, and stowing states of each pod independently and can also
-actuate each pod independently. The AIP actor is responsible for the following:
+The Actuated Instrument Pod (AIP) system is a set of 4 poles that can be
+deployed into the water automatically by a linear actuator. It can monitor
+deployed, deploying, stowed, and stowing states of each pod independently and
+can also actuate each pod independently. The AIP actor is responsible for the
+following:
 
 - create and maintains a serial connection to the AIP system 
 - subscribe and monitor to AIP-command messages
@@ -91,6 +92,8 @@ of 200Ah at 12V nominal.
 ![Battery manager](images/BTB.png)
 
 ### Depth Sensor Actor
+
+![Depth transducer being installed in the flipped over hull](images/depth_transducer.png)
 
 The Depth Sensor Actor inherits from the RDS Instrument Class to gain access to
 serial port functionality. It communicates through RS485 to a thru-hull depth
@@ -179,6 +182,12 @@ does this in two ways, by reading heading commands (imagine the Captain saying
 "Point the ship to 35 degrees" or by reading steering commands containing rudder
 and throttle data (imagine the Captain saying "Right full rudder and all ahead
 full"). This actor operates by a state machine. 
+
+The RoboDolf steers by use differential thrust. This has the mechanical benefit
+of avoiding rudder actuators that add cost and reliability issues and also
+allows for in-place turning.
+
+![Differential thrust calculation](images/diff_thrust.png)
 
 ### Controller Actor
 
