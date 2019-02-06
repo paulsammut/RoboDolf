@@ -203,9 +203,8 @@ commands are received.
 ![Differential thrust calculation](images/diff_thrust.png)
 
 When following steering commands the Helm Actor converts the rudder and throttle
-commands into motor thrust commands using a differential thrust algorithm.
-
-When following heading commands the Helm Actor uses a PID loop with the desired
+commands into motor thrust commands using a differential thrust algorithm. When
+following heading commands the Helm Actor uses a PID loop with the desired
 heading as a setpoint and the actual heading as the input. The gains were
 tweaked during field tests and can be set remotely and while under operation. 
 
