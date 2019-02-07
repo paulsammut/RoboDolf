@@ -3,23 +3,24 @@
 ![RoboDolf](images/robodolf.png "RoboDolf vehicle in trials in Belize")
 
 The RoboDolf is a robot boat designed to assign in acoustic dolphin research in
-Belize. It was an unmanned surface vessel (USV) that was built on a 16' long
-SeaCycle catamaran platform. It was powered by a LiFePo4 battery bank powering
-two modified electric thrusters in a differential thrust configuration. It has
-two communication radio systems, a long range 900 MHz radio for basic telemetry
-and a 2.4GHz 802.11 link for a full data link. The vehicle could operate under
-manned mode, with an operator on-board controlling the vehicle with an xbox
-controller, under shore remote mode and under autonomous waypoint follow mode.
-The vehicle had a host of instruments and sensors along with 4 actuated
-instrument pods that could be automatically raised and lowered into the water.
-The vehicle and field OPS systems where shipped to a remote atoll off the coast
-of Belize and successfully operated in mangroves.
+Belize. It is an unmanned surface vessel (USV) that was built on a 16' long
+SeaCycle catamaran platform. It has a LiFePo4 battery bank powering two modified
+electric thrusters in a differential thrust configuration. It has two
+communication radio systems, a long range 900 MHz radio for basic telemetry and
+a 2.4GHz 802.11 link for a full data link. The vehicle could operate under 3
+different modes. A manned mode with an operator on-board controlling the vehicle
+with an xbox controller, under shore remote mode and under autonomous mode.  The
+vehicle had a host of instruments and sensors along with 4 actuated instrument
+pods that could be automatically raised and lowered into the water.  The vehicle
+and field OPS systems where shipped to a remote atoll off the coast of Belize
+and where it successfully operated.
 
 In this repo, the entire software system powering the RoboDolf is supplied. The
 system was written by Paul Sammut in LabVIEW using the actor framework. A custom
 message routing and subscription layer was written on top of the actor framework
-that facilitated a one-to-many node communication system. Note: I wrote this
-project before learning ROS and if were doing it again I would write it in ROS.
+that facilitated a one-to-many node communication system. A class structure was
+created to facilitate the writing of common nodes, such as controllers and serial
+instruments.
 
 ## RDS Architecture
 
@@ -27,7 +28,7 @@ project before learning ROS and if were doing it again I would write it in ROS.
 
 The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major
 function of the RoboDolf is written as a nested child actor object that inherits
-from a special RDS Parent Actor object. This allowed me to be able to create
+from a special RDS Parent Actor object. This allowed for the creation of
 node-like processes that ran independently of each other, but could easily share
 data between each other in a structured way. 
 
@@ -186,8 +187,6 @@ The Logger Actor subscribes to:
 * State Sample Message
 
 ### Local Remote Actor
-
-![local remote control](images/localremote.png)
 
 The Local Remote Actor handles the functionality that allows an onboard vehicle
 operator to steer the boat via the onboard xbox controller. Because there are
