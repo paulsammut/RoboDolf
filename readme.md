@@ -74,13 +74,12 @@ The AIP Actor publishes these RDS Messages:
 
 ### MCB Motor Actor (Port and STBD)
 
-![MCB class hierarchy](images/MCB_class.png)
-
 The Port Motor Actor is an instance of an MCB Instrument Class which inherits
 from an RDS Instrument class. The RDS Instrument class is a descendant of the
 RDS Parent Actor class, and adds serial communications functionality. This actor
 can be set up to be a Port or STBD motor controller, which follows the DRY
-principle for identical motor controller code. 
+principle for identical motor controller code. The motor controller is an
+MDC1230 RoboteQ single channel 80A brushed motor controller. 
 
 ![MCB port](images/MCB_port.png)
 
@@ -131,17 +130,25 @@ The Depth Sensor Actor inherits from the RDS Instrument Class to gain access to
 serial port functionality. It communicates through RS485 to a thru-hull depth
 transducer and publishes water depth messages.
 
+#### Subscriptions and Publications
+
+The Depth Sensor Actor publishes this RDS Message:
+
+* Depth Data Message
+
 ### LSR Actor
 
-The Low Speed Radio (LSR) Actor handles duplex wireless communication to a remote
-system via a wireless 900 MHz link. It does this by subscribing to a list of RDS
-messages. On receipt of any of these messages, it serializes them into a string,
-then compresses the string using GZIP, splits the string into a set of packets
-to satisfy the maximum COBS packet length less 2 bytes for a CRC32 number,
-computes the CRC32 value and adds it to the end, then encodes it in COBS to
-create a packet with a unique termination character. With this set of uniquely
-terminated byte array packets, it sends them out to the LSR to be transmitted
-wirelessly. 
+![Shore base station](images/shore_station.png)
+
+The Low Speed Radio (LSR) Actor handles duplex wireless communication to a
+remote system via a wireless Digi 900 MHz link. It does this by subscribing to a
+list of RDS messages. On receipt of any of these messages, it serializes them
+into a string, then compresses the string using GZIP, splits the string into a
+set of packets to satisfy the maximum COBS packet length less 2 bytes for a
+CRC32 number, computes the CRC32 value and adds it to the end, then encodes it
+in COBS to create a packet with a unique termination character. With this set of
+uniquely terminated byte array packets, it sends them out to the LSR to be
+transmitted wirelessly. 
 
 The receiver receives and decodes these packets in the reverse manner. It then
 converts the serialized RDS string into a valid RDS message object and simply
@@ -149,8 +156,6 @@ sends it to the RDS message router as if it were the original sender. The
 receiver also has the same exact sending functionality, and can send packets to
 the LSR actor on board the ship. The LSR Actor receives these packs and decodes
 them in the same way. 
-
-![LSR Parabolic base station antenna](images/LSR.png)
 
 With this communications system, actors can communicate to each other
 asynchronously while not running on the same computer, miles away from each
@@ -163,7 +168,7 @@ The LSR Actor subscribes to:
 
 * State Sample Message
 
-The LSR Actor publishes these RDS Messages:
+The LSR Actor publishes this RDS Message:
 
 * Controller Message
 
@@ -173,6 +178,12 @@ The Logger Actor creates log files for post mission review. It does this by
 simply recording RDS Message traffic. A Logger replay utility was also written
 to playback the RDS messages. A list of RDS messages is used for logging
 subscription.
+
+#### Subscriptions and Publications
+
+The Logger Actor subscribes to:
+
+* State Sample Message
 
 ### Local Remote Actor
 
@@ -191,6 +202,16 @@ throttle commands. These commands are called RDS Steering Commands and are read
 by the Helm Actor. The Helm actor then converts the rudder and throttle commands
 into throttle commands for the Port and STBD thrusters.
 
+#### Subscriptions and Publications
+
+The Local Remote Actor subscribes to:
+
+* Controller Message
+
+The Local Remote Actor publishes this RDS Messages:
+
+* Controller Message
+
 ### GPS Actor
 
 ![Garmin GPS](images/GPS.png)
@@ -200,11 +221,23 @@ Instrument Actor object and receives, decodes NMEA strings and packs them into
 an RDS GPS message. This data is used by the Helm Actor for navigation and
 waypoint reference.
 
+#### Subscriptions and Publications
+
+The GPS Actor publishes this RDS Messages:
+
+* GPS Data Message
+
 ### Compass Actor
 
 The Compass Actor interfaces with an OceanServer OS5000 digital compass which
 fuses data from Honeywell magnetometer and ST Microelectronics accelerometers to
 produce an AHRS output. 
+
+#### Subscriptions and Publications
+
+The Compass Actor publishes this RDS Messages:
+
+* Compass Data Message
 
 ### State Tracker Actor
 
@@ -283,8 +316,6 @@ following heading commands the Helm Actor uses a PID loop with the desired
 heading as a setpoint and the actual heading as the input. The gains were
 tweaked during field tests and can be set remotely and while under operation. 
 
-![Helm PID cycle](images/helm_PID.png)
-
 #### Subscriptions and Publications
 
 The Helm Actor subscribes to:
@@ -304,9 +335,10 @@ The Helm Actor publishes these RDS Messages:
 ### Controller Actor
 
 The Controller Actor is responsible for arbitrating control of the ship. There
-are three different "officers" that can have control of the ship. This
-arbitration system prevents controllers from fighting over control by issuing
-competing steering/heading commands.
+are three different controllers (think different officers on a ship) that can
+have control of the ship depending on the running mode. This arbitration system
+prevents controllers from fighting over control by issuing competing
+steering/heading commands.
 
 * local remote - an operator on board the vehicle using the Xbox controller
 * shore remote - an operator on shore using an Xbox controller remotely
@@ -375,6 +407,17 @@ The Mission Controller publishes these RDS Messages:
 
 ## Utilities
 
-### Monitor
+### Shore Remote
+
+![Shore Remote](images/shore_remote.png "Shore remote being run on an operator
+laptop")
+
+The Shore Remote utility allows for full monitoring and control of a deployed
+RoboDolf from a shore laptop connected to a Digi 900 MHz radio. It is written as
+its own project and makes use of the RDS Framework library. This GUI makes use
+of LabVIEW's native chart displays for which it is well suited.
+
 
 ### Log Reader
+
+The Log Reader utility loads log files and can display all the run data.
