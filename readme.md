@@ -208,9 +208,66 @@ following heading commands the Helm Actor uses a PID loop with the desired
 heading as a setpoint and the actual heading as the input. The gains were
 tweaked during field tests and can be set remotely and while under operation. 
 
+![Helm PID cycle](images/helm_PID.png)
+
 ### Controller Actor
 
+The Controller Actor is responsible for arbitrating control of the ship. There
+are three different "officers" that can have control of the ship. This
+arbitration system prevents controllers from fighting over control by issuing
+competing steering/heading commands.
+
+* local remote - an operator on board the vehicle using the Xbox controller
+* shore remote - an operator on shore using an Xbox controller remotely
+* mission control - the Mission Control Actor running the mission and steering the ship to the next waypoint.
+
+The arbitration works by a control request/relinquish/grant mechanism. Whenever
+a controller wants to take control, it issues a request to the Controller Actor.
+The Controller Actor then relinquishes the command of any currently enabled
+controller and then grants control to the requesting controller. The Helm Actor
+only enacts steering messages coming from controllers that have a control
+boolean enabled.
+
 ### Mission Control Actor
+
+The Mission Control Actor's job is to run a mission script and give heading and
+speed commands to the Helm Actor. A mission script is an array of MissionOp 
+objects that the Mission Control Actor sequences through. There are 4 types of
+MissionOps:
+
+* Waypoint
+* Loiter
+* Wait
+* Deploy AIP
+* Stow AIP
+
+The Mission Controller has a state machine that monitors its state along with
+incoming commands. It can receive mission upload messages during runtime and
+commands to run a loaded mission at a desired operation index. When running in
+waypoint mode, the Mission Controller calculates the distance and heading using
+the Haversine formula and generates a heading and distance vector. It then
+issues heading-throttle commands to the Helm and the Helm keeps the ship on the
+vector. When the ship gets within the waypoint radius, the sequencer moves on to
+the next waypoint.
+
+The Mission Controller subscribes to:
+
+* Controller Message
+* Mission Upload Message
+* Mission Set Op and Run Message
+* Mission Settings Set Message
+* GPS Data Message
+* Compass Data Message
+* Mission Controller Cycle Message
+* Mission Controller Send State Message
+
+The Mission Controller publishes these RDS Messages:
+
+* Mission Controller State Message
+* Mission Set Op Index and Run Message
+* Mission Upload Message
+* Set Mission Controller Settings Message
+* Mission Controller Cycle Message
 
 ## Utilities
 
