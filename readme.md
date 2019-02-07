@@ -37,7 +37,7 @@ RDS comprises the following actors:
 - [Port Motor Actor](#mcb-motor-actor-port-and-stbd)
 - [STBD Motor Actor](#mcb-motor-actor-port-and-stbd)
 - [Battery Manager Actor](#battery-manager-actor)
-- [Dept Sensor Actor](#dept-sensor-actor)
+- [Depth Sensor Actor](#depth-sensor-actor)
 - [LSR Actor](#lsr-actor)
 - [Logger Actor](#logger-actor)
 - [Local Remote Actor](#local-remote-actor)
@@ -60,6 +60,18 @@ following:
 - subscribe and monitor to AIP-command messages
 - subscribe and monitor water-depth messages and automatically raise the AIP if water-depth is below a minimum
 
+#### Subscriptions and Publications
+
+The AIP Actor subscribes to:
+
+* AIP Command Message
+* AIP Set Min Depth Message
+* Depth Data Message
+
+The AIP Actor publishes these RDS Messages:
+
+* AIP Status Message
+
 ### MCB Motor Actor (Port and STBD)
 
 ![MCB class hierarchy](images/MCB_class.png)
@@ -78,6 +90,16 @@ This actor is responsible for the following:
 - subscribe to motor messages and enact motor commands to appropriate serial commands
 - read back state information about thruster, pack a motor state message and send it out
 
+#### Subscriptions and Publications
+
+The MCB Motor Actor subscribes to:
+
+* MCB Command Message 
+
+The MCB Motor Actor publishes these RDS Messages:
+
+* Motor Data Message
+
 ### Battery Manager Actor
 
 ![Battery pack](images/BTB_pack.png)
@@ -90,6 +112,16 @@ The battery bank is a set of 2 LiFePo4 12.8V 100Ah packs in parallel for a total
 of 200Ah at 12V nominal.
 
 ![Battery manager](images/BTB.png)
+
+#### Subscriptions and Publications
+
+The Battery Manager Actor subscribes to:
+
+* Battery Shutdown Message
+
+The Battery Manager Actor publishes these RDS Messages:
+
+* Battery State Message
 
 ### Depth Sensor Actor
 
@@ -111,7 +143,6 @@ create a packet with a unique termination character. With this set of uniquely
 terminated byte array packets, it sends them out to the LSR to be transmitted
 wirelessly. 
 
-
 The receiver receives and decodes these packets in the reverse manner. It then
 converts the serialized RDS string into a valid RDS message object and simply
 sends it to the RDS message router as if it were the original sender. The
@@ -125,6 +156,16 @@ With this communications system, actors can communicate to each other
 asynchronously while not running on the same computer, miles away from each
 other thanks to the 900MHz link. The base station utilized a parabolic antenna,
 while the RoboDolf had an omnidirectional antenna onboard.
+
+#### Subscriptions and Publications
+
+The LSR Actor subscribes to:
+
+* State Sample Message
+
+The LSR Actor publishes these RDS Messages:
+
+* Controller Message
 
 ### Logger Actor
 
@@ -175,6 +216,40 @@ here](images/RDS_state.png). The State Tracker Actor sends this compiled RDS
 State object at a set rate. This object is sent over the LSR and provides the
 main telemetry feedback during shore monitoring and remote operation.
 
+#### Subscriptions and Publications
+
+The State Tracker Actor subscribes to:
+
+* AIP Command Message
+* AIP Set Min Depth Message
+* AIP Status Message
+* Battery Shutdown Message
+* Battery Data Message
+* Compass Data Message
+* Controller Message
+* Controller State Message
+* Depth Data Message
+* GPS Data Message
+* Helm Heading Command Message
+* Helm Limiter Set Message
+* Helm Status Message
+* Helm Steering Command Message
+* MCB Command Message
+* MCB State Message
+* Mission Controller State Message
+* Mission Set Op and Run Message
+* Mission Settings Set Message
+* Mission Upload Message
+* PID Gains Set Message
+* Set Mag Dev Message
+* State Sample Message
+* State Sample Request Message
+
+The State Tracker Actor publishes these RDS Messages:
+
+* State Sample Message
+* State Sample Request Message
+
 ### Helm Actor
 
 The Helm Actor is the process that issues throttle commands to the motors. It
@@ -210,6 +285,22 @@ tweaked during field tests and can be set remotely and while under operation.
 
 ![Helm PID cycle](images/helm_PID.png)
 
+#### Subscriptions and Publications
+
+The Helm Actor subscribes to:
+
+* GPS Data Message
+* Compass Data Message
+* PID Gains Set Message
+* Helm Limiter Set Message
+* Helm Heading Command Message
+* Helm Steering Command Message
+
+The Helm Actor publishes these RDS Messages:
+
+* Helm Status Message
+* MCB Command Message
+
 ### Controller Actor
 
 The Controller Actor is responsible for arbitrating control of the ship. There
@@ -227,6 +318,17 @@ The Controller Actor then relinquishes the command of any currently enabled
 controller and then grants control to the requesting controller. The Helm Actor
 only enacts steering messages coming from controllers that have a control
 boolean enabled.
+
+#### Subscriptions and Publications
+
+The Controller Actor subscribes to:
+
+* Controller Message
+
+The Controller Actor publishes these RDS Messages:
+
+* Controller Message
+* Controller State Message
 
 ### Mission Control Actor
 
@@ -250,24 +352,26 @@ issues heading-throttle commands to the Helm and the Helm keeps the ship on the
 vector. When the ship gets within the waypoint radius, the sequencer moves on to
 the next waypoint.
 
+#### Subscriptions and Sends
+
 The Mission Controller subscribes to:
 
-* Controller Message
-* Mission Upload Message
-* Mission Set Op and Run Message
-* Mission Settings Set Message
-* GPS Data Message
 * Compass Data Message
+* Controller Message
+* GPS Data Message
 * Mission Controller Cycle Message
 * Mission Controller Send State Message
+* Mission Set Op and Run Message
+* Mission Settings Set Message
+* Mission Upload Message
 
 The Mission Controller publishes these RDS Messages:
 
+* Mission Controller Cycle Message
 * Mission Controller State Message
 * Mission Set Op Index and Run Message
 * Mission Upload Message
 * Set Mission Controller Settings Message
-* Mission Controller Cycle Message
 
 ## Utilities
 
