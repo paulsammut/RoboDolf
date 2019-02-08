@@ -24,16 +24,37 @@ instruments.
 
 ## RDS Architecture
 
-![RDS Framework Architecture](images/RDS_framework.png)
-
 The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major
 function of the RoboDolf is written as a nested child actor object that inherits
 from a special RDS Parent Actor object. This allowed for the creation of
-node-like processes that ran independently of each other, but could easily share
+node-like processes that run independently of each other, but can easily share
 data between each other in a structured way. 
+
+The system works on a one to many publisher/subscriber principle. Each actor
+subscribes to a list of message types on launch. During run-time the actor can
+send whatever messages it likes. Logic code can be written on receipt of the
+messages, on an internal actor loop or by some other means such as on receipt
+of hardware events.
+
+![RDS Framework Architecture](images/RDS_framework.png)
+
+All this is implemented in LabVIEW using the Actor Framework and LV-OOP as an
+added framework called the RDS Framework. This had to be done because the
+LabVIEW Actor Framework does not have native functionality for one to many
+message broadcasting. Each actor must have access to a queue handle for any
+actor it wants to send messages to. This was overcome by creating an actor
+called an RDS Router, and by creating an RDS Parent Node that has functionality
+to subscribe to a list of messages, send messages to the router and receive
+messages from the router. In this way, each actor only needs to have the queue
+handle of the RDS Router Actor, sending it messages and not worrying about who
+needs to see them. All messages are wrapped in an RDS Message class which allows
+the RDS Router to handle them regardless of their specific type implementation.
+
+## RDS Actors
 
 RDS comprises the following actors:
 
+- [RDS Router Actor](#rds-router-actor)
 - [AIP Actor](#aip-actor)
 - [Port Motor Actor](#mcb-motor-actor-port-and-stbd)
 - [STBD Motor Actor](#mcb-motor-actor-port-and-stbd)
@@ -48,6 +69,38 @@ RDS comprises the following actors:
 - [Helm Actor](#helm-actor)
 - [Controller Actor](#controller-actor)
 - [Mission Control Actor](#mission-control-actor)
+
+### RDS Router Actor
+
+The RDS Router handles all inter-actor communications. It operates on a
+principle of subscriptions. Each actor sends the RDS Router an array of messages
+it is subscribed to. This subscription is implemented as a boolean array, with
+the index corresponding to a unique id that addresses each message. This list of
+unique message ID's is implemented as a typedef. This boolean array, along with
+the actor's message queue is packed into an RDS Subscription object and sent to
+the RDS Router. This functionality, which is common to all RDS actor's is
+implemented in the RDS Parent Actor class which all RDS Actors inherit from. The
+following image shows a specific RDS Actor, in this case the Mission Control
+Actor, being configured with mission control settings and message subscriptions
+and being "launched and subscribed". In the launch and subscribe phase the RDS
+Actor is launched, given the handle of the RDS Router queue (so it can send it
+RDS messages) and having its subscription list sent to the RDS router, so then
+RDS Router knows what messages it wants to receive.
+
+![RDS Actor launch and subscribe](images/RDS_actor_launch_sub.png)
+
+During run time, RDS Actors send messages to the RDS Router. The router receives
+the messages, and through each subscription it has (one for every RDS Actor) and
+checks to see if that actor is subscribed to that message ID. It does this by
+simply indexing a boolean array, which takes O(1) time for each actor
+subscription. If that boolean is true, it sends the message to the associated
+message queue. Easy peasy!
+
+This framework made up of LabVIEW Actors and LV-OOP classes allow for all common
+functionality to be shared across actors and allowed one developer to be able
+to quickly code the robotic systems. Operational overhead was minimal and all
+inter-actor communications was handled by performant LabVIEW queues, and
+implemented in the battle-tested LabVIEW Actor Framework.
 
 ### AIP Actor
 
