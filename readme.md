@@ -24,7 +24,7 @@ instruments.
 
 ## RDS Architecture
 
-![root actor](images/root_actor.png "Root actor child actor launch page")
+![RDS Framework Architecture](images/RDS_framework.png)
 
 The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major
 function of the RoboDolf is written as a nested child actor object that inherits
