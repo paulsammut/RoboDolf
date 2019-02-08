@@ -13,7 +13,7 @@ communication radio systems, a long range 900 MHz radio for basic telemetry and
 a 2.4GHz 802.11 link for a full data link. The vehicle could operate under 3
 different modes. A manned mode with an operator on-board controlling the vehicle
 with an xbox controller, under shore remote mode and under autonomous mode.  The
-vehicle had a host of instruments and sensors along with 4 actuated instrument
+vehicle has a host of instruments and sensors along with 4 actuated instrument
 pods that could be automatically raised and lowered into the water.  The vehicle
 and field OPS systems where shipped to a remote atoll off the coast of Belize
 and where it successfully operated.
