@@ -1,9 +1,12 @@
-# RoboDolf Software
-
 ![RoboDolf](images/robodolf.png "RoboDolf vehicle in trials in Belize")
 
-The RoboDolf is a robot boat designed to assign in acoustic dolphin research in
-Belize. It is an unmanned surface vessel (USV) that was built on a 16' long
+The RoboDolf is an electric robot boat designed to conduct acoustic dolphin
+research in Belize. Acoustic and visual recording of dolphins is conducted to
+study dolphin vocalization gain insights into complex dolphin socialization.
+A robotic boat platform that was silent and had minimal visual impact on natural
+dolphin behavior was required, and drove the specifications for the RoboDolf.
+
+The RoboDolf is an unmanned surface vessel (USV) that was built on a 16' long
 SeaCycle catamaran platform. It has a LiFePo4 battery bank powering two modified
 electric thrusters in a differential thrust configuration. It has two
 communication radio systems, a long range 900 MHz radio for basic telemetry and
@@ -14,6 +17,8 @@ vehicle had a host of instruments and sensors along with 4 actuated instrument
 pods that could be automatically raised and lowered into the water.  The vehicle
 and field OPS systems where shipped to a remote atoll off the coast of Belize
 and where it successfully operated.
+
+For a video of its construction and operation [click here](https://youtu.be/pHH6SKcS8ms)
 
 In this repo, the entire software system powering the RoboDolf is supplied. The
 system was written by Paul Sammut in LabVIEW using the actor framework. A custom
