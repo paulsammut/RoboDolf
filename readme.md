@@ -10,9 +10,9 @@ The RoboDolf is an unmanned surface vessel (USV) that was built on a 16' long
 SeaCycle catamaran platform. It has a LiFePo4 battery bank powering two modified
 electric thrusters in a differential thrust configuration. It has two
 communication radio systems, a long range 900 MHz radio for basic telemetry and
-a 2.4GHz 802.11 link for a full data link. The vehicle can operate under 3
+a 2.4GHz 802.11 link for a full data/video link. The vehicle can operate under 3
 different modes. A manned mode with an operator on-board controlling the vehicle
-with an xbox controller, under shore remote mode and under autonomous mode.  The
+with an xbox controller; under shore remote mode; and under autonomous mode.  The
 vehicle has a host of instruments and sensors along with 4 actuated instrument
 pods that can be automatically raised and lowered into the water.  The vehicle
 and field OPS systems where shipped to a remote atoll off the coast of Belize
@@ -20,22 +20,22 @@ and where it successfully operated.
 
 For a video of its construction and operation [click here](https://youtu.be/pHH6SKcS8ms)
 
-In this repo, the entire software system powering the RoboDolf is supplied. The
-system was written by Paul Sammut in LabVIEW using the actor framework. A custom
-message routing and subscription layer was written on top of the actor framework
-that facilitated a one-to-many node communication system. A class structure was
-created to facilitate the writing of common nodes, such as controllers and serial
-instruments.
+In this repo, the software system powering the RoboDolf is supplied. The system
+was written by Paul Sammut in LabVIEW using the Actor Framework and LV-OOP. A
+custom message routing and subscription layer was written on top of the Actor
+Framework that facilitated a one-to-many node communication system. A class
+structure was created to facilitate the writing of common nodes, such as
+controllers and serial instruments. This system is called the RDS Framework.
 
-## RDS Architecture
+## RDS Framework Architecture
 
-The RDS system makes heavy use of LV-OOP and the Actor Framework. Each major
+The RDS Framework makes heavy use of LV-OOP and the Actor Framework. Each major
 function of the RoboDolf is written as a nested child actor object that inherits
-from a special RDS Parent Actor object. This allowed for the creation of
+from a special RDS Parent Actor class. This allowed for the creation of
 node-like processes that run independently of each other, but can easily share
 data between each other in a structured way. 
 
-The system works on a one to many publisher/subscriber principle. Each actor
+The system works on a one to many publisher/subscribers principle. Each actor
 subscribes to a list of message types on launch. During run-time the actor can
 send whatever messages it likes. Logic code can be written on receipt of the
 messages, on an internal actor loop or by some other means such as on receipt
@@ -43,17 +43,22 @@ of hardware events.
 
 ![RDS Framework Architecture](images/RDS_framework.png)
 
-All this is implemented in LabVIEW using the Actor Framework and LV-OOP as an
-added framework called the RDS Framework. This had to be done because the
-LabVIEW Actor Framework does not have native functionality for one to many
-message broadcasting. Each actor must have access to a queue handle for any
-actor it wants to send messages to. This was overcome by creating an actor
-called an RDS Router, and by creating an RDS Parent Node that has functionality
-to subscribe to a list of messages, send messages to the router and receive
-messages from the router. In this way, each actor only needs to have the queue
-handle of the RDS Router Actor, sending it messages and not worrying about who
-needs to see them. All messages are wrapped in an RDS Message class which allows
-the RDS Router to handle them regardless of their specific type implementation.
+This framework was written because the LabVIEW Actor Framework does not have
+native functionality for one to many message broadcasting. Each actor must have
+access to a queue handle for any actor it wants to send messages to. This was
+overcome by creating an actor called the RDS Router, and by creating an RDS
+Parent class that has functionality to subscribe to a list of messages; send
+messages to the router; and receive messages from the router. In this way, each
+actor only needs to have the queue handle of the RDS Router Actor, sending it
+messages and not worrying about who needs to see them.  All messages are wrapped
+in an RDS Message class which allows the RDS Router to handle them regardless of
+their specific type implementation.
+
+This framework allows for all common functionality to be shared across actors and
+allowed one developer to be able to quickly code the robotic sub-systems.
+Operational overhead was minimal and all inter-actor communications was handled
+by performant LabVIEW queues, and implemented in the battle-tested LabVIEW Actor
+Framework.
 
 ## RDS Actors
 
@@ -100,12 +105,6 @@ checks to see if that actor is subscribed to that message ID. It does this by
 simply indexing a boolean array, which takes O(1) time for each actor
 subscription. If that boolean is true, it sends the message to the associated
 message queue. Easy peasy!
-
-This framework made up of LabVIEW Actors and LV-OOP classes allow for all common
-functionality to be shared across actors and allowed one developer to be able
-to quickly code the robotic systems. Operational overhead was minimal and all
-inter-actor communications was handled by performant LabVIEW queues, and
-implemented in the battle-tested LabVIEW Actor Framework.
 
 ### AIP Actor
 
