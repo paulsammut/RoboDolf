@@ -1,3 +1,5 @@
+# RoboDolf Software (RDS)
+
 ![RoboDolf](images/robodolf.png "RoboDolf vehicle in trials in Belize")
 
 The RoboDolf is an electric robot boat designed to conduct acoustic dolphin
@@ -483,3 +485,9 @@ of LabVIEW's native chart displays for which it is well suited.
 ### Log Reader
 
 The Log Reader utility loads log files and can display all the run data.
+
+## Dependencies
+
+RDS uses OpenG LabVIEW ZIP Library 4.0.0-2 and above. [JKI VIPM
+Link](vipm://oglib_lvzip?repo_url=http://www.jkisoft.com/packages). This package
+is used to compress the serialized object data transported wirelessly over the LSR.
