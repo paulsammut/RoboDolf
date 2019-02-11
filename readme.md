@@ -20,7 +20,7 @@ pods that can be automatically raised and lowered into the water.  The vehicle
 and field OPS systems where shipped to a remote atoll off the coast of Belize
 and where it successfully operated.
 
-For a video of its construction and operation [click here](https://youtu.be/pHH6SKcS8ms)
+For a video of its construction and operation [click here](https://youtu.be/pHH6SKcS8ms).
 
 In this repo, the software system powering the RoboDolf is supplied. The system
 was written by Paul Sammut in LabVIEW using the Actor Framework and LV-OOP. A
