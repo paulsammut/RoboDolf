@@ -488,5 +488,8 @@ The Log Reader utility loads log files and can display all the run data.
 
 ## Dependencies
 
-RDS uses OpenG LabVIEW ZIP Library 4.0.0-2 and above. [JKI VIPM Link](vipm://oglib_lvzip?repo_url=http://www.jkisoft.com/packages). This package
-is used to compress the serialized object data transported wirelessly over the LSR.
+RDS was written in LabVIEW 2015.
+
+RDS uses OpenG LabVIEW ZIP Library 4.0.0-2 and above. 
+<a href="vipm://oglib_lvzip?repo_url=http://www.jkisoft.com/packages">JKI VIPM Link</a>.
+This package is used to compress the serialized object data transported wirelessly over the LSR.
