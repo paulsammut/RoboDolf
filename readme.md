@@ -33,7 +33,7 @@ This project was made possible by the sponsor Dr. Marcelo Magnasco at the
 Rockefeller University and Eric Angel Ramos who runs the dolphin research
 programs in Belize.
 
-*Quick Note: If coding anything like this, do it in ROS :)*
+***Quick Note: If coding anything like this, do it in ROS :)***
 
 ## RDS Framework Architecture
 
